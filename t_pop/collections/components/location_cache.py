@@ -93,6 +93,9 @@ class LocationCache(list):
         """
         kdtree = KDTree(self)
         if self.cache_type == LocationCacheType.FAKE:
+            #if the cache calling this is the fake one, it returns The true position of a lying car
             return kdtree.query_ball_point((car.true_x, car.true_y), car.range_of_sight)
+
         else:
+            #if the cache calling this is the true one, The fake position of a lying car 
             return kdtree.query_ball_point((car.fake_x, car.fake_y), car.range_of_sight)

@@ -45,6 +45,7 @@ class LocationCacheAdapter:
         if car.fake_position_index is not None:
             self.fake_cache.update_car_position(car=car)
 
+#TODO: check this logic is actually correct, not entirely sure at the moment. 
     def get_neighbours(self, car: Car) -> Dict[LocationCacheType, List[int]]:
         """
         Gets the neighbours of a car.
@@ -53,21 +54,34 @@ class LocationCacheAdapter:
         :return: the list of indexes of the neighbours mapped to the cache type
         """
         if car.honest is True and car.coerced is False:
+            '''if a car X is honest and non coerced, it adds:
+            1. the honest cars within its range of sight wrt car X's true position
+            2. the lying cars' true position within its range of sight wrt car X's true position'''
             return {
                 LocationCacheType.TRUE: self.true_cache.get_cars_in_range(car),
                 LocationCacheType.FAKE: []
             }
         elif car.honest is True and car.coerced is True:
+            '''if a car X is honest and coerced, it adds:
+            1. the honest cars within its range of sight wrt car X's true position
+            2. the lying cars' fake position within its range of sight wrt car X's true position'''
             return {
                 LocationCacheType.TRUE: self.true_cache.get_cars_in_range(car),
                 LocationCacheType.FAKE: self.fake_cache.get_cars_in_range(car)
             }
         elif car.honest is False and car.coerced is False:
+            '''if a car X is lying and non coerced, it adds:
+            1. the honest cars within its range of sight wrt car X's fake position
+            2. the lying cars' true position within its range of sight wrt car X's fake position'''
             return {
-                LocationCacheType.TRUE: self.true_cache.get_inverse_cars_in_range(car),
-                LocationCacheType.FAKE: []
+                
+                LocationCacheType.TRUE: self.fake_cache.get_cars_in_range(car),
+                LocationCacheType.FAKE: self.fake_cache.get_inverse_cars_in_range(car)
             }
         elif car.honest is False and car.coerced is True:
+            '''if a car X is lying and coerced, it adds:
+            1. the honest cars within its range of sight wrt car X's fake position
+            2. the lying cars' fake position within its range of sight wrt car X's fake position'''
             return {
                 LocationCacheType.TRUE: self.true_cache.get_inverse_cars_in_range(car),
                 LocationCacheType.FAKE: self.fake_cache.get_cars_in_range(car)

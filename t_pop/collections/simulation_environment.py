@@ -1,5 +1,7 @@
 
 class SimulationEnvironment:
+    #TODO: this is redundant now, the location is encaptured in the location cache
+    #no need for a grid.
 
     def __init__(self, x_coordinates: list, y_coordinates: list, grid_size):
         self.x_coordinates = x_coordinates

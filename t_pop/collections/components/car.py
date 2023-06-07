@@ -16,8 +16,16 @@ class Car:
         car_id (str): the unique identifier of the car
         coerced (bool): whether the car is coerced or not
         parent (Optional[Car]): the parent car
-        true_x (int): the real x coordinate of the car
+        true_x (int): the real x coordinate of the car. 
         true_y (int): the real y coordinate of the car
+
+        If x and y are not given, true_x and true_y are randomly generated within the bounds of the location.
+
+        x_min Optional[int]: the smallest x coordinate of the location
+        x_max Optional[int]: the largest x coordinate of the location
+        y_min Optional[int]: the smallest y coordinate of the location
+        y_max Optional[int]: the largest y coordinate of the location
+
         fake_x (Optional[int]): the fake x coordinate of the car
         fake_y (Optional[int]): the fake y coordinate of the car
         velocity (int): the velocity of the car
@@ -27,7 +35,9 @@ class Car:
         true_position_index (Optional[int]): the index of the car's true position in the position cache
         fake_position_index (Optional[int]): the index of the car's fake position in the position cache
     """
-    def __init__(self, x: int, y: int, coerced: bool, parent: Optional["Car"] = None) -> None:
+    def __init__(self, x: Optional[int], y: Optional[int], x_min: Optional[int], x_max: Optional[int],
+                y_min: Optional[int], y_max: Optional[int], coerced: bool, 
+                parent: Optional["Car"] = None) -> None:
         """
         The constructor for the Car class.
 
@@ -40,8 +50,7 @@ class Car:
         self.car_id: str = self._generate_hex_string(length=5)
         self.coerced: bool = coerced
         self.parent: Optional["BaseCar"] = parent
-        self.true_x: int = x
-        self.true_y: int = y
+        
         self.fake_x: Optional[int] = None
         self.fake_y: Optional[int] = None
         self.velocity: np.array = self._generate_velocity()
@@ -50,6 +59,14 @@ class Car:
         self.honest: bool = True
         self.true_position_index: Optional[int] = None
         self.fake_position_index: Optional[int] = None
+        
+        if x is None and y is None:
+            self.true_x = self._generate_position(x_min, x_max)
+            self.true_y: int = self._generate_position(y_min, y_max)
+        else:
+            self.true_x: int = x
+            self.true_y: int = y
+
 
     @staticmethod
     def _generate_velocity() -> np.array:
@@ -70,17 +87,35 @@ class Car:
         """
         hex_characters = string.hexdigits[:-6]
         return ''.join(random.choice(hex_characters) for _ in range(length))
-
-    def set_as_fake(self, fake_x: int, fake_y: int) -> None:
+    
+    @staticmethod
+    def _generate_position(min, max) -> int:
         """
-        Sets the car as a fake car.
+        Generates a position integer within the bounds of the environment.
+
+        :return: position of the car
+        """
+        return int(np.random.uniform(low=min, high=max, size=1))
+
+    def set_as_fake(self, x_min: Optional[int], x_max: Optional[int],
+                y_min: Optional[int], y_max: Optional[int],
+                fake_x: Optional[int], fake_y: Optional[int]) -> None:
+        """
+        Sets the car as a fake car. Can take either a specific fake position or 
+        generates the fake position randomly.
 
         :param fake_x: the fake x coordinate of the car
         :param fake_y: the fake y coordinate of the car
         :return: None
         """
-        self.fake_x = fake_x
-        self.fake_y = fake_y
+        
+        if fake_x is None and fake_y is None:
+            self.fake_x = self._generate_position(x_min, x_max)
+            self.fake_y = self._generate_position(y_min, y_max)
+        else:
+            self.fake_x = fake_x
+            self.fake_y = fake_y
+
         self.honest = False
 
     def move_position(self, time: float, x_min: int, x_max: int, y_min: int, y_max: int) -> None:

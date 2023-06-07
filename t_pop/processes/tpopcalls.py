@@ -34,8 +34,11 @@ print(location_adapter.location_cache.fake_cache, len(location_adapter.location_
 
 for i in range(100):
     print(f'car {i} neighbours are: {location_adapter.location_cache.get_neighbours(cars[i])}')
+    
 
 #TODO: need to remove itself from the list of neighbours, or add this as a check into TPOP.
+#do the check in tpop function
+
 #Need to bear in mind that I should use an efficient method to remove that item from the list, otherwise it will add complexity.
-#TODO: add the initialiser functions to set the percent of honest and coerced cars
+
 #TODO: add the simulator functions. 

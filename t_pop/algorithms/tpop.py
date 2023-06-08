@@ -1,4 +1,4 @@
-def checks_v3(child, named_cars, number_of_witnesses_needed, threshold):
+def checks(child, named_cars, number_of_witnesses_needed, threshold):
     """checks called from the child with respect to the parent node, to ensure that 
     all criteria for T-PoP are met."""
     counter = 0
@@ -8,12 +8,13 @@ def checks_v3(child, named_cars, number_of_witnesses_needed, threshold):
     
     if (
     #checking the parent is a neighbour of the child
-    
-    #TODO: add this function to car class
+
+    #TODO: add this function to car class and do only one of the checks because if it is in range of sight it will be a neighbour
+    #
     child.is_car_a_neighbour(parent) is True and
-    #checking the parent is in the range of sight of the child
-    #TODO: call the correct function from the location cache
-    child.is_in_range_of_sight(parent_position) is True and
+    
+
+
     #checking the child has not been named before
     child.ID not in named_cars and 
     #checking the parent has named enough witnesses (ie children)
@@ -51,3 +52,16 @@ def TPoP(tree, threshold:float, witness_number_per_depth:int) -> bool:
             parent.algorithm_honesty_output = True
         
     return root.algorithm_honesty_output
+
+
+def check_no_cross_referencing(car, witnesses):
+    if car.honest is True:
+        if car.true_position_index in set(witnesses):
+            return False
+        else:
+            return True
+    else:
+        if car.fake_position_index in set(witnesses):
+            return False
+        else:
+            return True

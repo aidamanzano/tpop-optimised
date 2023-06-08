@@ -16,14 +16,14 @@ def honest(p):
     else:
         return False
 
-def car_generator(p:float, q:float):
+def car_generator(p:float, q:float, x_min: int, x_max: int, y_min: int, y_max: int):
     'p = probability of honest and q probability of coerced'
     h = honest(p)
     c = coerced(q)
 
     if h is True:
-        car = t_pop.collections.components.car.Car(x_min=0, x_max=10, y_min=0, y_max=10, coerced=c)
+        car = t_pop.collections.components.car.Car(x_min, x_max, y_min, y_max, coerced=c)
     else:
-        car = t_pop.collections.components.car.Car(x_min=0, x_max=10, y_min=0, y_max=10, coerced=c).set_as_fake(x_min=0, x_max=10, y_min=0, y_max=10)
+        car = t_pop.collections.components.car.Car(x_min, x_max, y_min, y_max, coerced=c).set_as_fake(x_min, x_max, y_min, y_max)
     
     return car

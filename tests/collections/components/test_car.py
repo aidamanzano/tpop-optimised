@@ -46,6 +46,7 @@ class TestCar(TestCase):
         self.assertEqual(10, self.test.x)
         self.assertEqual(5, self.test.y)
 
-
+#TODO: test the position generator function
+#TODO: test that the optional arguments for true_x and true_y and fake_x and fake_y work as expected
 if __name__ == '__main__':
     main()

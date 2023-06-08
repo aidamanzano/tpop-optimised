@@ -4,11 +4,11 @@ from t_pop.collections.components.car import Car
 
 class TwoDLocationGuardAdapter:
 
-    def __init__(self, x_min: int, x_max: int, y_min: int, y_max: int) -> None:
-        self.x_min: int = x_min
-        self.x_max: int = x_max
-        self.y_min: int = y_min
-        self.y_max: int = y_max
+    def __init__(self, bounds: list) -> None:
+        self.x_min: int = bounds[0][0]
+        self.x_max: int = bounds[0][1]
+        self.y_min: int = bounds[1][0]
+        self.y_max: int = bounds[1][1]
         self.location_cache: LocationCacheAdapter = LocationCacheAdapter()
 
     def check_bounds(self, car: Car) -> bool:

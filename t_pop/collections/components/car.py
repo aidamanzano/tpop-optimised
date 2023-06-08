@@ -21,10 +21,9 @@ class Car:
 
         If x and y are not given, true_x and true_y are randomly generated within the bounds of the location.
 
-        x_min Optional[int]: the smallest x coordinate of the location
-        x_max Optional[int]: the largest x coordinate of the location
-        y_min Optional[int]: the smallest y coordinate of the location
-        y_max Optional[int]: the largest y coordinate of the location
+        
+        bounds Optional[(x_min:int, x_max: int), (y_min: int, y_max:int)]: 2D bounds of the environment of the car.
+        
 
         fake_x (Optional[int]): the fake x coordinate of the car
         fake_y (Optional[int]): the fake y coordinate of the car
@@ -35,8 +34,8 @@ class Car:
         true_position_index (Optional[int]): the index of the car's true position in the position cache
         fake_position_index (Optional[int]): the index of the car's fake position in the position cache
     """
-    def __init__(self, x: Optional[int], y: Optional[int], x_min: Optional[int], x_max: Optional[int],
-                y_min: Optional[int], y_max: Optional[int], coerced: bool, 
+    def __init__(self, coerced: bool, x: Optional[int] = None, y: Optional[int] = None, 
+                bounds: Optional[list] = None,
                 parent: Optional["Car"] = None) -> None:
         """
         The constructor for the Car class.
@@ -54,15 +53,22 @@ class Car:
         self.fake_x: Optional[int] = None
         self.fake_y: Optional[int] = None
         self.velocity: np.array = self._generate_velocity()
-        self.range_of_sight: float = 0.1
+        self.range_of_sight: float = 1
         self.position_history: List[Tuple[int, int]]  = []
         self.honest: bool = True
         self.true_position_index: Optional[int] = None
         self.fake_position_index: Optional[int] = None
         
+        
+        if bounds is not None:
+            self.x_min = bounds[0][0]
+            self.x_max = bounds[0][1]
+            self.y_min = bounds[1][0]
+            self.y_max = bounds[1][1]
+
         if x is None and y is None:
-            self.true_x = self._generate_position(x_min, x_max)
-            self.true_y: int = self._generate_position(y_min, y_max)
+            self.true_x = self._generate_position(self.x_min, self.x_max)
+            self.true_y: int = self._generate_position(self.y_min, self.y_max)
         else:
             self.true_x: int = x
             self.true_y: int = y
@@ -97,9 +103,8 @@ class Car:
         """
         return int(np.random.uniform(low=min, high=max, size=1))
 
-    def set_as_fake(self, x_min: Optional[int], x_max: Optional[int],
-                y_min: Optional[int], y_max: Optional[int],
-                fake_x: Optional[int], fake_y: Optional[int]) -> None:
+    def set_as_fake(self, bounds: Optional[list] = None, 
+                fake_x: Optional[int] = None, fake_y: Optional[int] = None) -> None:
         """
         Sets the car as a fake car. Can take either a specific fake position or 
         generates the fake position randomly.
@@ -109,9 +114,11 @@ class Car:
         :return: None
         """
         
+
         if fake_x is None and fake_y is None:
-            self.fake_x = self._generate_position(x_min, x_max)
-            self.fake_y = self._generate_position(y_min, y_max)
+            assert bounds != None, 'bounds should be given if no fake_x and fake_y have been provided'
+            self.fake_x = self._generate_position(self.x_min, self.x_max)
+            self.fake_y = self._generate_position(self.y_min, self.y_max)
         else:
             self.fake_x = fake_x
             self.fake_y = fake_y
@@ -174,3 +181,6 @@ class Car:
         if self.honest is False:
             return self.fake_y
         return self.true_y
+    
+        
+    

@@ -1,3 +1,4 @@
+from tree import Tree
 def checks(child, named_cars, number_of_witnesses_needed, threshold):
     """checks called from the child with respect to the parent node, to ensure that 
     all criteria for T-PoP are met."""
@@ -28,7 +29,7 @@ def checks(child, named_cars, number_of_witnesses_needed, threshold):
         return False
     
 
-def TPoP(tree, threshold:float, witness_number_per_depth:int) -> bool:
+def TPoP(tree:Tree, threshold:float, witness_number_per_depth:int) -> bool:
     named_cars = set()
     root = tree.prover
     for level in range(tree.depth - 1, -1, -1):

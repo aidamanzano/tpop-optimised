@@ -52,6 +52,7 @@ class LocationCache(list):
         setattr(car, self.cache_type.value, self.cache_size)
         self.cache_size += 1
         return car
+        #Car_container_dict.update( {car.position_id : car} ) should be two container dicts, one for fake and one for true cache
 
     def update_car_position(self, car: Car) -> None:
         """
@@ -78,6 +79,7 @@ class LocationCache(list):
         kdtree = KDTree(self)
         if self.cache_type == LocationCacheType.FAKE:
             return kdtree.query_ball_point((car.fake_x, car.fake_y), car.range_of_sight)
+            #get the car instance, not return the position ID
         else:
             return kdtree.query_ball_point((car.true_x, car.true_y), car.range_of_sight)
 

@@ -24,7 +24,7 @@ def name_witness(number: int, neighbours: list) -> Optional[list]:
         return None
     
 
-class Tree2:
+class Tree:
 
     def __init__(self, prover, depth:int, number_of_witnesses:list, locations, containers):
         #prover is the root of the tree, and the agent calling this function

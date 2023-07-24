@@ -46,7 +46,7 @@ for i in range(number_of_cars):
 
 containers = Containers(true_car_container_dict, fake_car_container_dict)
 
-tree = Tree2(cars[0], 2, [2, 2, 2], location_adapter, containers)
+tree = Tree(cars[0], 2, [2, 2, 2], location_adapter, containers)
 output = tpop_algorithm.TPoP(tree, 1.0, [2, 2, 2], location_adapter)
 print('hello')
 

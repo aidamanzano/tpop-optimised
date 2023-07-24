@@ -5,6 +5,7 @@ from t_pop.algorithms.tree import Tree
 
 from t_pop.collections.components.car import Car
 from t_pop.collections.components.containers import Containers
+import t_pop.algorithms.tpop as tpop_algorithm
 
 import random
 
@@ -16,7 +17,7 @@ location_adapter = TwoDLocationGuardAdapter(environment_size)
 
 
 
-number_of_cars = 100
+number_of_cars = 1000
 from t_pop.processes.agent_generator import coerced
 
 
@@ -28,8 +29,8 @@ fake_car_container_dict = {}
 
 for i in range(number_of_cars):
 
-    if i%2 == 0:
-        cars[i].set_as_fake(fake_x=random.randint(0, 1), fake_y= random.randint(0, 1))
+    #if i%2 == 0:
+        #cars[i].set_as_fake(fake_x=random.randint(0, 1), fake_y= random.randint(0, 1))
     
     location_adapter.add_car(cars[i])
     location_adapter.move_car(cars[i], time=1)
@@ -45,8 +46,8 @@ for i in range(number_of_cars):
 
 containers = Containers(true_car_container_dict, fake_car_container_dict)
 
-tree = Tree(cars[0], 2, [2, 2], location_adapter, containers)
-
+tree = Tree2(cars[0], 2, [2, 2, 2], location_adapter, containers)
+output = tpop_algorithm.TPoP(tree, 1.0, [2, 2, 2], location_adapter)
 print('hello')
 
 #get by ID/true position index

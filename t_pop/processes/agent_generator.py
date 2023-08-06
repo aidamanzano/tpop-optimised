@@ -1,5 +1,5 @@
 import numpy as np
-import t_pop.collections.components.car
+from t_pop.collections.components.car import Car
 
 def coerced(q):
     coin_toss = np.random.rand()
@@ -16,14 +16,8 @@ def honest(p):
     else:
         return False
 
-def car_generator(p:float, q:float, x_min: int, x_max: int, y_min: int, y_max: int):
+def car_generator(p:float, q:float, environment_size, number_of_cars):
     'p = probability of honest and q probability of coerced'
-    h = honest(p)
-    c = coerced(q)
-
-    if h is True:
-        car = t_pop.collections.components.car.Car(x_min, x_max, y_min, y_max, coerced=c)
-    else:
-        car = t_pop.collections.components.car.Car(x_min, x_max, y_min, y_max, coerced=c).set_as_fake(x_min, x_max, y_min, y_max)
+    car_list = [Car(coerced=coerced(p), honest = honest(q), bounds = environment_size) for _ in range(number_of_cars)]
     
-    return car
+    return car_list

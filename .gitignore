@@ -130,3 +130,6 @@ dmypy.json
 
 .DS_Store
 .idea
+
+#Text files from simulations
+simulation_pathfiles_depth2_neighbours_2.txt

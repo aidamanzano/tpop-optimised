@@ -34,7 +34,7 @@ class Car:
         true_position_index (Optional[int]): the index of the car's true position in the position cache
         fake_position_index (Optional[int]): the index of the car's fake position in the position cache
     """
-    def __init__(self, coerced: bool, x: Optional[int] = None, y: Optional[int] = None, 
+    def __init__(self, coerced: bool, honest: bool, x: Optional[int] = None, y: Optional[int] = None, 
                 bounds: Optional[list] = None,
                 parent: Optional["Car"] = None) -> None:
         """
@@ -53,11 +53,12 @@ class Car:
         self.fake_x: Optional[int] = None
         self.fake_y: Optional[int] = None
         self.velocity: np.array = self._generate_velocity()
-        self.range_of_sight: float = 1
+        self.range_of_sight: float = 0.1
         self.position_history: List[Tuple[int, int]]  = []
-        self.honest: bool = True
+        self.honest: bool = honest
         self.true_position_index: Optional[int] = None
         self.fake_position_index: Optional[int] = None
+        self.algorithm_honesty_output = None
         
         
         if bounds is not None:
@@ -72,6 +73,13 @@ class Car:
         else:
             self.true_x: int = x
             self.true_y: int = y
+
+        if honest is False:
+            if bounds is not None:
+                self.set_as_fake(bounds)
+            elif self.fake_x is not None and self.fake_y is not None:
+                self.set_as_fake(self.fake_x, self.fake_y)
+
 
 
     @staticmethod

@@ -7,6 +7,7 @@ class Containers:
         self.true_car_container_dictionary = true_car_container
         
     def get_container_dictionary(self, node):
+        #TODO: Missing logic, should return fake dictionary too if the car is honest and coerced
         if node.honest is False:
             return self.fake_car_container_dictionary
         else:

@@ -89,7 +89,6 @@ class Tree:
                 neighbours_dictionary = get_neighbours_dict(node, self.locations)
                 witness_dictionary = witness_dictionary_gen(neighbours_dictionary, self.number_of_witnesses[d])
 
-                #TODO: added this if statement and indented code below
                 if witness_dictionary is not None:
                     witnesses = get_car_from_dict(witness_dictionary, containers)
                     for witness in witnesses:    

@@ -69,7 +69,7 @@ def TPoP(tree:Tree, threshold:float, witness_number_per_depth:list, locations:Lo
                         counterChildren += 1
                         counterDepth += 1
                     indexChild += 1
-                    if checks(child, named_cars, number_of_witnesses_needed, threshold, locations) is False:
+                    
                         
 
                 if counterChildren < threshold*witness_number_per_depth[level+1]:

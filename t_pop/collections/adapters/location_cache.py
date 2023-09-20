@@ -60,6 +60,7 @@ class LocationCacheAdapter:
             return {
                 LocationCacheType.TRUE: self.true_cache.get_cars_in_range(car),
                 LocationCacheType.FAKE: []
+                #LocationCacheType.FAKE: self.fake_cache.get_inverse_cars_in_range(car)
             }
         elif car.honest is True and car.coerced is True:
             '''if a car X is honest and coerced, it adds:
@@ -68,6 +69,7 @@ class LocationCacheAdapter:
             return {
                 LocationCacheType.TRUE: self.true_cache.get_cars_in_range(car),
                 LocationCacheType.FAKE: self.fake_cache.get_cars_in_range(car)
+                #LocationCacheType.FAKE: []
             }
         elif car.honest is False and car.coerced is False:
             '''if a car X is lying and non coerced, it adds:
@@ -75,8 +77,8 @@ class LocationCacheAdapter:
             2. the lying cars' true position within its range of sight wrt car X's fake position'''
             return {
                 
-                LocationCacheType.TRUE: self.fake_cache.get_cars_in_range(car),
-                LocationCacheType.FAKE: self.fake_cache.get_inverse_cars_in_range(car)
+                LocationCacheType.TRUE: [],
+                LocationCacheType.FAKE: self.fake_cache.get_cars_in_range(car)
             }
         elif car.honest is False and car.coerced is True:
             '''if a car X is lying and coerced, it adds:

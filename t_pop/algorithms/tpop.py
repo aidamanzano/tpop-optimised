@@ -5,6 +5,9 @@ from t_pop.collections.components.location_cache import LocationCacheType
 
 
 def is_car_a_neighbour(node, neighbours_dict):
+    #TODO: check the coercion of the node.
+    # im not checking the honesty and coercion of the element in the neighboburs dict too. 
+    # use logic from the add neighbours function and then do a simple query of if node in  neighbour_dict. 
     if node.honest is True:
         if node.true_position_index in neighbours_dict[LocationCacheType.TRUE]:
             return True
@@ -15,10 +18,9 @@ def is_car_a_neighbour(node, neighbours_dict):
         if node.fake_position_index in neighbours_dict[LocationCacheType.FAKE]:
             return True
         elif node.true_position_index in neighbours_dict[LocationCacheType.TRUE]:
-            
+            #TODO: go through possible scenarios
             return True
         else:
-            
             return False
             
 

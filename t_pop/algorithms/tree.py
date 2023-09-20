@@ -5,6 +5,10 @@ from t_pop.collections.components.containers import Containers
 
 def get_neighbours_dict(node, locations: LocationCache) -> list:
 
+    print('Fake cache: ',locations.location_cache.fake_cache)
+    print('True cache: ',locations.location_cache.true_cache)
+    print(node.honest, node.coerced)
+
     neighbours_dict = locations.location_cache.get_neighbours(node)
     return neighbours_dict
 
@@ -65,8 +69,7 @@ def get_car_from_dict(witnesses_dictionary:dict, containers:Containers):
         else:
             witness = containers.get_car_from_position_index(id, containers.fake_car_container_dictionary)
         witnesses.append(witness)
-    return witnesses
-    
+    return witnesses    
 
 class Tree:
 
@@ -85,10 +88,13 @@ class Tree:
             #for all nodes in the given depth level
             for node in self.nodes[d]:
                 l = []
-
+                #try:
                 neighbours_dictionary = get_neighbours_dict(node, self.locations)
+            
+                #except ValueError:
+                    #print(neighbours_dictionary, type(neighbours_dictionary))
                 witness_dictionary = witness_dictionary_gen(neighbours_dictionary, self.number_of_witnesses[d])
-
+                
                 if witness_dictionary is not None:
                     witnesses = get_car_from_dict(witness_dictionary, containers)
                     for witness in witnesses:    

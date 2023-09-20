@@ -95,7 +95,6 @@ def full_csv(directory_path_string):
     all the simulation data"""
     
     directory = os.fsencode(directory_path_string)
-    print(directory)
     dfs = []
 
     for file in os.listdir(directory):

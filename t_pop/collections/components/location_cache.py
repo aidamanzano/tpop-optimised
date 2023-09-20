@@ -76,7 +76,11 @@ class LocationCache(list):
         :param car: the car whose range of sight is to be checked
         :return: a list of the indices of the cars in range_of_sight of the given car
         """
+        print('self', self.cache_type)
+
         kdtree = KDTree(self)
+        #print(kdtree.data)
+
         if self.cache_type == LocationCacheType.FAKE:
             return kdtree.query_ball_point((car.fake_x, car.fake_y), car.range_of_sight)
             #get the car instance, not return the position ID
@@ -84,6 +88,7 @@ class LocationCache(list):
             return kdtree.query_ball_point((car.true_x, car.true_y), car.range_of_sight)
 
     def get_inverse_cars_in_range(self, car: Car) -> List[int]:
+        #this will only work if there are two caches? If one of the two is empty it wont work
         """
         Returns a list of the indices of the cars in range_of_sight of the given car in the opposite cache.
 

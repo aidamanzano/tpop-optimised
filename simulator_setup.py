@@ -22,11 +22,11 @@ def simulator_setup(environment_size:list[tuple, tuple], number_of_cars:int, p_c
 
     #Assign the cars
     for i in range(number_of_cars):
-        #location_adapter.location_cache.fake_cache.add_car(cars[i])
+        
         #putting the car into the location cache
         location_adapter.add_car(cars[i])
         #moving the car within the environment (location cache)
-        location_adapter.move_car(cars[i], time=1)
+        #location_adapter.move_car(cars[i], time=1)
 
         #putting into the container dictionary the position as a key and the car class instance as the value
         true_car_container_dict.update( {cars[i].true_position_index : cars[i]} )
@@ -66,7 +66,7 @@ def simulator_caller(number_of_simulations:int, number_of_cars:int, prob_coerced
         car_list, location_adapter, containers = simulator_setup(environment_size, number_of_cars, prob_coerced, prob_honest)
         for car in car_list:
             tree = Tree(car, depth, number_of_witnesses_per_depth, location_adapter, containers)
-            TPoP(tree, threshold, number_of_witnesses_per_depth, location_adapter)
+            TPoP(tree, threshold, number_of_witnesses_per_depth, location_adapter, containers)
         True_Positive, True_Negative, False_Positive, False_Negative, Accuracy = results(car_list)
         row = parser(simulation_id, prob_honest, prob_coerced, density, threshold, Accuracy, True_Positive, True_Negative, False_Positive, False_Negative)
         data.append(row)

@@ -2,11 +2,7 @@
 This file defines the LocationCache class which is responsible for keeping track of the locations of all cars in the
 simulation.
 """
-from typing import List
 from enum import Enum
-
-from scipy.spatial import KDTree
-
 from t_pop.collections.components.car import Car
 
 
@@ -65,44 +61,3 @@ class LocationCache(list):
             self[getattr(car, self.cache_type.value)] = (car.fake_x, car.fake_y)
         else:
             self[getattr(car, self.cache_type.value)] = (car.true_x, car.true_y)
-
-    def get_cars_in_range(self, car: Car) -> List[int]:
-        """
-        Returns a list of the indices of the cars in range_of_sight of the given car.
-
-        Can be used to get the fake car positions from the fake position of the car
-        Can be used to get the true car positions from the true position of the car
-
-        :param car: the car whose range of sight is to be checked
-        :return: a list of the indices of the cars in range_of_sight of the given car
-        """
-        print('self', self.cache_type)
-
-        kdtree = KDTree(self)
-        #print(kdtree.data)
-
-        if self.cache_type == LocationCacheType.FAKE:
-            return kdtree.query_ball_point((car.fake_x, car.fake_y), car.range_of_sight)
-            #get the car instance, not return the position ID
-        else:
-            return kdtree.query_ball_point((car.true_x, car.true_y), car.range_of_sight)
-
-    def get_inverse_cars_in_range(self, car: Car) -> List[int]:
-        #this will only work if there are two caches? If one of the two is empty it wont work
-        """
-        Returns a list of the indices of the cars in range_of_sight of the given car in the opposite cache.
-
-        Can be used to get the fake car positions from the true position of the car
-        Can be used to get the true car positions from the fake position of the car
-
-        :param car: the car whose range of sight is to be checked
-        :return: a list of the indices of the cars in range_of_sight of the given car from the opposite cache
-        """
-        kdtree = KDTree(self)
-        if self.cache_type == LocationCacheType.FAKE:
-            #if the cache calling this is the fake one, it returns The true position of a lying car
-            return kdtree.query_ball_point((car.true_x, car.true_y), car.range_of_sight)
-
-        else:
-            #if the cache calling this is the true one, The fake position of a lying car 
-            return kdtree.query_ball_point((car.fake_x, car.fake_y), car.range_of_sight)

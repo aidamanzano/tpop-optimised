@@ -1,41 +1,63 @@
 
-from t_pop.algorithms.tree import Tree, get_neighbours_dict
+from t_pop.algorithms.tree import Tree
 from t_pop.collections.adapters.location_cache import LocationCacheAdapter
-from t_pop.collections.components.location_cache import LocationCacheType
+from t_pop.collections.components.car import Car
+from t_pop.collections.components.neighbours_testing import get_neighbours_cache_and_dict, neighbour_cars
+from t_pop.collections.components.containers import Containers
 
 
-def is_car_a_neighbour(node, neighbours_dict):
-    #TODO: check the coercion of the node.
-    # im not checking the honesty and coercion of the element in the neighboburs dict too. 
-    # use logic from the add neighbours function and then do a simple query of if node in  neighbour_dict. 
-    if node.honest is True:
-        if node.true_position_index in neighbours_dict[LocationCacheType.TRUE]:
-            return True
-        else:
-            return False
+def get_neighbourhood_set(parent:Car, parent_neighbours:list[Car]) -> None:
+    """Function to compute the set of neighbour unique IDs of an agent.
+    
+    params: parent: Car class instance who's neighbourhood set is being computed.
+    parent neighbours: list of car class instances containing the parent's neighbours.
+    
+    returns: None. Sets the parent.neighbourhood_set attribute."""
+    #initialise a set to contain the unique IDs of the parent neighbours
+    
+    neighbour_set = set()
+    
+    for neighbour in parent_neighbours:
+        if neighbour is not None:
+            #print(neighbour)
+            #add the car ID of each neighbour into the set
+            neighbour_set.add(neighbour.car_id)
+            parent.neighbourhood_set = neighbour_set
+            #TODO; uncomment and figure out what is happening here, why is it not re setting
+            #print(parent.neighbourhood_set)
+    neighbour_set.clear()
 
-    elif node.honest is False:
-        if node.fake_position_index in neighbours_dict[LocationCacheType.FAKE]:
-            return True
-        elif node.true_position_index in neighbours_dict[LocationCacheType.TRUE]:
-            #TODO: go through possible scenarios
-            return True
-        else:
-            return False
-            
+def is_car_neighbour(parent:Car, parent_neighbours:list[Car], child:Car):
+    """Function to check if a child is a neghbour of a parent.
 
+    params: parent_neghbours: list of car class instances of the parent's neighbours
+    child: Car instance of the child being checked
+    parent: Car instance of the car whose neighbours are being checked
 
-def checks(child, named_cars:set, number_of_witnesses_needed:int, threshold:float, locations:LocationCacheAdapter) -> bool:
+    returns: True if child is a neighbour of the parent and False otherwise.
+    """
+    #initialise a set to contain the unique IDs of the parent neighbours
+    get_neighbourhood_set(parent, parent_neighbours)
+    
+    if child.car_id in parent.neighbourhood_set:
+        return True
+    else:
+        #raise Exception('child is not in neighbourhood set')
+        return False
+
+def checks(child, named_cars:set, number_of_witnesses_needed:int, threshold:float, locations:LocationCacheAdapter, containers:Containers) -> bool:
     """checks called from the child with respect to the parent node, to ensure that 
     all criteria for T-PoP are met."""
 
     parent = child.parent
     
-    parent_neighbours = get_neighbours_dict(parent, locations)
+    parent_neighbours_cache, true_car_dictionary, fake_car_dictionary = get_neighbours_cache_and_dict(parent, locations.location_cache, containers)
+    parent_container = Containers(true_car_dictionary, fake_car_dictionary)
+    parent_neighbours = neighbour_cars(parent_container, parent_neighbours_cache)
     
     if (
     #checking the parent is a neighbour of the child
-    is_car_a_neighbour(child, parent_neighbours) and
+    is_car_neighbour(parent, parent_neighbours, child) and
     
     #checking the child has not been named before
     child.car_id not in named_cars and
@@ -52,7 +74,7 @@ def checks(child, named_cars:set, number_of_witnesses_needed:int, threshold:floa
         
         return False
     
-def TPoP(tree:Tree, threshold:float, witness_number_per_depth:list, locations:LocationCacheAdapter) -> bool:
+def TPoP(tree:Tree, threshold:float, witness_number_per_depth:list, locations:LocationCacheAdapter, containers:Containers) -> bool:
     
     named_cars = set()
 
@@ -67,19 +89,20 @@ def TPoP(tree:Tree, threshold:float, witness_number_per_depth:list, locations:Lo
             
                 for child in parent.children:
                     
-                    if checks(child, named_cars, number_of_witnesses_needed, threshold, locations) and verifiedCars[level + 1][indexChild]:
+                    if checks(child, named_cars, number_of_witnesses_needed, threshold, locations, containers) and verifiedCars[level + 1][indexChild]:
                         counterChildren += 1
                         counterDepth += 1
+                    #else:
+                        #raise Exception('checks did not pass')
                     indexChild += 1
                     
-                        
-
                 if counterChildren < threshold*witness_number_per_depth[level+1]:
                     verifiedCars[level][indexParent] = False
                 
         if counterDepth < threshold*witness_number_per_depth[level+1]:
             tree.prover.algorithm_honesty_output = False
-            
+            #raise Exception('not enough verifications at that depth level')
         else:
             tree.prover.algorithm_honesty_output = True
+            
     
